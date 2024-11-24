@@ -80,7 +80,7 @@ class KrbClient:
     async def async_ios(self):
         """로그인을 수행합니다."""
         url = f'{KITURAMI_API_URL}/notice/getNoticeIos'
-        response = await self.async_post(url, None)
+        response = await self.async_post(url, {})
         return response
 
 class KrbAPI:
