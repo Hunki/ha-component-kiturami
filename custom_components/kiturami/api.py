@@ -30,7 +30,7 @@ class KrbClient:
                 response = await session.post(url, headers={'Content-Type': 'application/json; charset=UTF-8',
                                                             'AUTH-KEY': self.auth_key}, json=args, timeout=10)
                 _LOGGER.debug('JSON Response: %s', await response.text())
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
                 return response
         except Exception as ex:
             _LOGGER.error('Failed to Kiturami API status Error: %s', ex)
