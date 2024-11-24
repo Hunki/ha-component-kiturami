@@ -50,7 +50,7 @@ async def async_setup_entry(
 
         for slave in slaves:
             _LOGGER.info(slave)
-            async_add_entities(KituramiClimate(api, device["parentId"], device["nodeId"], slave["slaveId"], slave["alias"], scan_interval), True)
+            async_add_entities([KituramiClimate(api, device["parentId"], device["nodeId"], slave["slaveId"], slave["alias"], scan_interval)], True)
 
 class KituramiClimate(ClimateEntity):
     """ 귀뚜라미 Climate 클래스"""
