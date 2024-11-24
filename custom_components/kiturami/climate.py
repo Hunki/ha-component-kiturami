@@ -68,7 +68,7 @@ class KituramiClimate(ClimateEntity):
         self._attr_device_info = DeviceInfo(
             configuration_url='https://krb.co.kr',
             identifiers={(DOMAIN, node_id, slave_id)},
-            name=TITLE,
+            name=f"{TITLE} {name}",
             manufacturer=TITLE,
             model=MODEL,
         )
