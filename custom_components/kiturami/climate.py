@@ -52,6 +52,7 @@ async def async_setup_entry(
             _LOGGER.info(slave)
             async_add_entities([KituramiClimate(api, device["parentId"], device["nodeId"], slave["slaveId"], slave["alias"], scan_interval)], True)
 
+    await api.client.async_ios()
 class KituramiClimate(ClimateEntity):
     """ 귀뚜라미 Climate 클래스"""
     _enable_turn_on_off_backwards_compatibility = False
@@ -166,7 +167,6 @@ class KituramiClimate(ClimateEntity):
         if self.is_on is False:
             self._req_mode = '0102'
             await self._api.async_turn_on(self._node_id, self._slave_id)
-            await asyncio.sleep(1)
         if preset_mode == PresetMode.HEAT:
             self._req_mode = '0102'
             await self._api.async_mode_heat(self._parent_id, self._node_id, self._slave_id)
@@ -198,8 +198,8 @@ class KituramiClimate(ClimateEntity):
         """최신 상태를 업데이트 합니다.
          {'studyYn': 'Y', 'code': '100', 'deviceAlias': '보일러 1', 'message': 'Success.','slaveId': '01', 'deviceMode': '0101', 'slaveAlias': 'st-kiturami',
          'option3': '01', 'actionId': '0102', 'option1': '00', 'currentTemp': '18', 'option2': '00', 'nodeId': '12010100:12:005321', 'value': '18'}
-        """
-        now = datetime.datetime.now()
+
+                 now = datetime.datetime.now()
         if not self._req_mode and self._last_updated and now - self._last_updated < self._min_time_between_updates:
             return
         self._alive = await self._api.async_get_alive(self._parent_id, self._node_id)
@@ -209,4 +209,8 @@ class KituramiClimate(ClimateEntity):
                 self._last_updated = now
                 break
 
+        self._req_mode = None
+        """
+
+        self._result = await self._api.async_device_mode_info(self._parent_id, self._node_id, self._slave_id)
         self._req_mode = None

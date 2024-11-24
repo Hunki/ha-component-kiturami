@@ -77,6 +77,12 @@ class KrbClient:
         response = await self.async_post(url, args)
         return response['deviceSlaveInfo']
 
+    async def async_ios(self):
+        """로그인을 수행합니다."""
+        url = f'{KITURAMI_API_URL}/notice/getNoticeIos'
+        response = await self.async_post(url, None)
+        return response
+
 class KrbAPI:
     """귀뚜라미 API"""
 
