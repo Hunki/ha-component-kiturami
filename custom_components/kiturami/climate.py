@@ -198,8 +198,9 @@ class KituramiClimate(ClimateEntity):
         """최신 상태를 업데이트 합니다.
          {'studyYn': 'Y', 'code': '100', 'deviceAlias': '보일러 1', 'message': 'Success.','slaveId': '01', 'deviceMode': '0101', 'slaveAlias': 'st-kiturami',
          'option3': '01', 'actionId': '0102', 'option1': '00', 'currentTemp': '18', 'option2': '00', 'nodeId': '12010100:12:005321', 'value': '18'}
+        """
 
-                 now = datetime.datetime.now()
+        now = datetime.datetime.now()
         if not self._req_mode and self._last_updated and now - self._last_updated < self._min_time_between_updates:
             return
         self._alive = await self._api.async_get_alive(self._parent_id, self._node_id)
@@ -209,12 +210,4 @@ class KituramiClimate(ClimateEntity):
                 self._last_updated = now
                 break
 
-        self._req_mode = None
-        """
-
-        if not self._req_mode:
-            return
-
-        self._alive = await self._api.async_get_alive(self._parent_id, self._node_id)
-        self._result = await self._api.async_device_mode_info(self._parent_id, self._node_id, self._slave_id, self._result['deviceMode'])
         self._req_mode = None
