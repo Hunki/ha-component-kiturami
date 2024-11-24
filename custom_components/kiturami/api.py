@@ -72,7 +72,7 @@ class KrbClient:
             'nodeId': device['nodeId'],
             'parentId': '1'
         }
-        response = await self.client.async_post(url, args)
+        response = await self.async_post(url, args)
         return response['deviceSlaveInfo']
 
 class KrbAPI:
