@@ -193,7 +193,6 @@ class KituramiClimate(ClimateEntity):
         elif hvac_mode == HVACMode.OFF:
             self._req_mode = '0101'
             await self._api.async_turn_off(self._node_id, self._slave_id)
-        await asyncio.sleep(1)
 
     async def async_update(self):
         """최신 상태를 업데이트 합니다.
@@ -209,6 +208,5 @@ class KituramiClimate(ClimateEntity):
             if not self._req_mode or self._result['deviceMode'] == self._req_mode:
                 self._last_updated = now
                 break
-            await asyncio.sleep(1)
 
         self._req_mode = None
