@@ -212,5 +212,6 @@ class KituramiClimate(ClimateEntity):
         self._req_mode = None
         """
 
-        self._result = await self._api.async_device_mode_info(self._parent_id, self._node_id, self._slave_id)
+        self._alive = await self._api.async_get_alive(self._parent_id, self._node_id)
+        self._result = await self._api.async_device_mode_info(self._parent_id, self._node_id, self._slave_id, self._result['deviceMode'])
         self._req_mode = None
