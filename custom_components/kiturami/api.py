@@ -122,27 +122,27 @@ class KrbAPI:
     async def async_mode_heat(self, parent_id: str, node_id: str, slave_id, target_temp: Optional[str] = None):
         """장치를 난방 모드로 설정합니다."""
         if not target_temp:
-            response = await self.async_device_mode_info(parent_id, node_id, '0102')
+            response = await self.async_device_mode_info(parent_id, node_id, slave_id, '0102')
             target_temp = response['value']
         body = f'{slave_id}000000{target_temp}00'
         await self.async_device_control(node_id, '0102', body)
 
     async def async_mode_bath(self, parent_id: str, node_id: str):
         """장치를 목욕 모드로 설정합니다."""
-        response = await self.async_device_mode_info(parent_id, node_id, '0105')
+        response = await self.async_device_mode_info(parent_id, node_id, '01', '0105')
         value = response['value']
         body = f'00000000{value}00'
         await self.async_device_control(node_id, '0105', body)
 
     async def async_mode_reservation(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 예약 모드로 설정합니다."""
-        response = await self.async_device_mode_info(parent_id, node_id, '0107')
+        response = await self.async_device_mode_info(parent_id, node_id, slave_id, '0107')
         body = f'{slave_id}{response['value']}'
         await self.async_device_control(node_id, '0107', body)
 
     async def async_mode_reservation_repeat(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 반복 예약 모드로 설정합니다."""
-        response = await self.async_device_mode_info(parent_id, node_id, '0108')
+        response = await self.async_device_mode_info(parent_id, node_id, slave_id, '0108')
         body = f'{slave_id}000000{response['value']}{response['option1']}'
         await self.async_device_control(node_id, '0108', body)
 
