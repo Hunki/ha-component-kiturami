@@ -41,13 +41,15 @@ async def async_setup_entry(
         return None
 
     for device in devices:
-        slaves = await api.client.async_get_device_info()
+        _LOGGER.info(device)
+        slaves = await api.client.async_get_device_info(device)
 
         if not slaves:
             _LOGGER.error("Failed to get slave divices")
             return None
 
         for slave in slaves:
+            _LOGGER.info(slave)
             async_add_entities(KituramiClimate(api, device["parentId"], device["nodeId"], slave["slaveId"], slave["alias"], scan_interval), True)
 
 class KituramiClimate(ClimateEntity):
