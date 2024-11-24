@@ -1,12 +1,12 @@
 {
   "domain": "kiturami",
   "name": "귀뚜라미",
-  "codeowners": ["@stkang90"],
+  "codeowners": ["@stkang90", "@Hunki"],
   "config_flow": true,
-  "documentation": "https://github.com/stkang/ha-component-kiturami",
+  "documentation": "https://github.com/Hunki/ha-component-kiturami",
   "dependencies": [],
   "requirements": [],
   "iot_class": "cloud_polling",
   "version": "1.1.0",
-  "issue_tracker": "https://github.com/stkang/ha-component-kiturami/issues"
+  "issue_tracker": "https://github.com/Hunki/ha-component-kiturami/issues"
 }

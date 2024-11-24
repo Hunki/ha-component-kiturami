@@ -20,6 +20,7 @@ class KrbClient:
         self.username = username
         self._password = password
         self.auth_key = ''
+        self.node_id = ''
 
     async def _async_request(self, url, args):
         """API 요청을 보냅니다."""
@@ -57,13 +58,22 @@ class KrbClient:
 
     async def async_get_device_list(self) -> List[Dict]:
         """장치 목록을 가져옵니다."""
-        url = f'{KITURAMI_API_URL}/member/getMemberNormalDeviceList'
+        url = f'{KITURAMI_API_URL}/member/getMemberDeviceList'
         args = {
             'parentId': '1'
         }
         response = await self.async_post(url, args)
         return response['memberDeviceList']
 
+    async def async_get_device_info(self, device):
+        """장치 정보를 가져옵니다."""
+        url = f'{KITURAMI_API_URL}/device/getDeviceInfo'
+        args = {
+            'nodeId': device['nodeId'],
+            'parentId': '1'
+        }
+        response = await self.client.async_post(url, args)
+        return response['deviceSlaveInfo']
 
 class KrbAPI:
     """귀뚜라미 API"""
@@ -80,23 +90,14 @@ class KrbAPI:
         }
         return await self.client.async_post(url, args)
 
-    async def async_get_device_info(self, node_id: str):
-        """장치 정보를 가져옵니다."""
-        url = f'{KITURAMI_API_URL}/device/getDeviceInfo'
-        args = {
-            'nodeId': node_id,
-            'parentId': '1'
-        }
-        return await self.client.async_post(url, args)
-
-    async def async_device_mode_info(self, parent_id: str, node_id: str, action_id='0102'):
+    async def async_device_mode_info(self, parent_id: str, node_id: str, slave_id:str, action_id='0102'):
         """장치 모드 정보를 가져옵니다."""
         url = f'{KITURAMI_API_URL}/device/getDeviceModeInfo'
         args = {
             'nodeId': node_id,
             'actionId': action_id,
             'parentId': parent_id,
-            'slaveId': '01'
+            'slaveId': slave_id,
         }
         return await self.client.async_post(url, args)
 
@@ -110,20 +111,20 @@ class KrbAPI:
         }
         return await self.client.async_post(url, args)
 
-    async def async_turn_on(self, node_id: str):
+    async def async_turn_on(self, node_id: str, slave_id: str):
         """장치를 켭니다."""
-        await self.async_device_control(node_id, '0101', '010000000001')
+        await self.async_device_control(node_id, '0101', f'{slave_id}0000000001')
 
-    async def async_turn_off(self, node_id: str):
+    async def async_turn_off(self, node_id: str, slave_id: str):
         """장치를 끕니다."""
-        await self.async_device_control(node_id, '0101', '010000000002')
+        await self.async_device_control(node_id, '0101', f'{slave_id}0000000002')
 
-    async def async_mode_heat(self, parent_id: str, node_id: str, target_temp: Optional[str] = None):
+    async def async_mode_heat(self, parent_id: str, node_id: str, slave_id, target_temp: Optional[str] = None):
         """장치를 난방 모드로 설정합니다."""
         if not target_temp:
             response = await self.async_device_mode_info(parent_id, node_id, '0102')
             target_temp = response['value']
-        body = f'01000000{target_temp}00'
+        body = f'{slave_id}000000{target_temp}00'
         await self.async_device_control(node_id, '0102', body)
 
     async def async_mode_bath(self, parent_id: str, node_id: str):
@@ -133,18 +134,18 @@ class KrbAPI:
         body = f'00000000{value}00'
         await self.async_device_control(node_id, '0105', body)
 
-    async def async_mode_reservation(self, parent_id: str, node_id: str):
+    async def async_mode_reservation(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 예약 모드로 설정합니다."""
         response = await self.async_device_mode_info(parent_id, node_id, '0107')
-        body = f'01{response['value']}'
+        body = f'{slave_id}{response['value']}'
         await self.async_device_control(node_id, '0107', body)
 
-    async def async_mode_reservation_repeat(self, parent_id: str, node_id: str):
+    async def async_mode_reservation_repeat(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 반복 예약 모드로 설정합니다."""
         response = await self.async_device_mode_info(parent_id, node_id, '0108')
-        body = f'01000000{response['value']}{response['option1']}'
+        body = f'{slave_id}000000{response['value']}{response['option1']}'
         await self.async_device_control(node_id, '0108', body)
 
-    async def async_mode_away(self, node_id: str):
+    async def async_mode_away(self, node_id: str, slave_id: str):
         """장치를 외출 모드로 설정합니다."""
-        await self.async_device_control(node_id, '0106', '010200000000')
+        await self.async_device_control(node_id, '0106', f'{slave_id}0200000000')
