@@ -106,8 +106,6 @@ class KituramiClimate(ClimateEntity):
             features |= ClimateEntityFeature.PRESET_MODE
         if self.preset_mode == PresetMode.HEAT:
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
-        if self.preset_mode == PresetMode.BATH:
-            features |= ClimateEntityFeature.TARGET_TEMPERATURE
         return features
 
     @property
@@ -140,11 +138,11 @@ class KituramiClimate(ClimateEntity):
     async def async_set_temperature(self, **kwargs):
         """새 목표 온도를 설정합니다."""
         if self.is_on is False:
-            await self._api.async_turn_on(self._node_id)
+            await self._api.async_turn_on(self._node_id, self._slave_id)
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
         self._req_mode = '0102'
-        await self._api.async_mode_heat(self._parent_id, self._node_id, '{:X}'.format(int(temperature)))
+        await self._api.async_mode_heat(self._parent_id, self._node_id, self._slave_id, '{:X}'.format(int(temperature)))
 
     @property
     def preset_mode(self):

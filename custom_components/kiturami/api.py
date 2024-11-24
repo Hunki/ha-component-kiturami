@@ -134,6 +134,15 @@ class KrbAPI:
         body = f'00000000{value}00'
         await self.async_device_control(node_id, '0105', body)
 
+        hval = '{:X}'.format(int(80))
+        bval = '{:X}'.format(int(70))
+        body = '00000000{}{}'.format(hval, bval)
+        await self.async_device_control('0103', body)
+
+        value = '{:X}'.format(int(70))
+        body = '00000000{}00'.format(value)
+        await self.device_control('0115', body)
+
     async def async_mode_reservation(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 예약 모드로 설정합니다."""
         response = await self.async_device_mode_info(parent_id, node_id, slave_id, '0107')

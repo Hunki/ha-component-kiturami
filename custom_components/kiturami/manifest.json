@@ -7,6 +7,6 @@
   "dependencies": [],
   "requirements": [],
   "iot_class": "cloud_polling",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "issue_tracker": "https://github.com/Hunki/ha-component-kiturami/issues"
 }
