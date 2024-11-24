@@ -67,7 +67,7 @@ class KituramiClimate(ClimateEntity):
         self._attr_name = f'{TITLE} {name}'
         self._attr_device_info = DeviceInfo(
             configuration_url='https://krb.co.kr',
-            identifiers={(DOMAIN, node_id)},
+            identifiers={(DOMAIN, node_id, slave_id)},
             name=TITLE,
             manufacturer=TITLE,
             model=MODEL,
@@ -191,10 +191,10 @@ class KituramiClimate(ClimateEntity):
         """새로운 hvac 모드를 설정합니다."""
         if hvac_mode == HVACMode.HEAT:
             self._req_mode = '0102'
-            await self._api.async_turn_on(self._node_id)
+            await self._api.async_turn_on(self._node_id, self._slave_id)
         elif hvac_mode == HVACMode.OFF:
             self._req_mode = '0101'
-            await self._api.async_turn_off(self._node_id)
+            await self._api.async_turn_off(self._node_id, self._slave_id)
         await asyncio.sleep(1)
 
     async def async_update(self):
