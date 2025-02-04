@@ -112,7 +112,8 @@ class KituramiClimate(ClimateEntity):
     @property
     def available(self):
         """장치가 사용 가능한지 확인합니다."""
-        return self._alive['deviceStat'] and self._alive['deviceStatus'] and self._alive['isAlive']
+        # return self._alive['deviceStat'] and self._alive['deviceStatus'] and self._alive['isAlive']
+        return self._alive['deviceStat']
 
     @property
     def is_on(self):
