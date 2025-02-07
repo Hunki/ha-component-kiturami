@@ -26,11 +26,11 @@ class KrbClient:
     async def _async_request(self, url, args):
         """API 요청을 보냅니다."""
         try:
+            await asyncio.sleep(1)
             async with aiohttp.ClientSession() as session:
                 response = await session.post(url, headers={'Content-Type': 'application/json; charset=UTF-8',
                                                             'AUTH-KEY': self.auth_key}, json=args, timeout=10)
                 _LOGGER.debug('JSON Response: %s', await response.text())
-                await asyncio.sleep(2)
                 return response
         except Exception as ex:
             _LOGGER.error('Failed to Kiturami API status Error: %s', ex)
@@ -141,6 +141,7 @@ class KrbAPI:
         body = f'00000000{value}00'
         await self.async_device_control(node_id, '0105', body)
 
+        """
         hval = '{:X}'.format(int(80))
         bval = '{:X}'.format(int(70))
         body = '00000000{}{}'.format(hval, bval)
@@ -152,6 +153,7 @@ class KrbAPI:
 
         response = await self.async_device_mode_info(parent_id, node_id, '01', '0105')
         _LOGGER.info(response)
+        """
 
     async def async_mode_reservation(self, parent_id: str, node_id: str, slave_id: str):
         """장치를 예약 모드로 설정합니다."""
